@@ -1,0 +1,4 @@
+# Source .localbashrc if it exists
+if [ -f ${HOME}/.localbashrc ]; then
+    . ${HOME}/.localbashrc
+fi
