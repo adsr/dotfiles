@@ -1,0 +1,30 @@
+[user]
+    name = Adam Saponara
+    email = saponara@gmail.com
+[github]
+    user = adsr
+[alias]
+    br = branch
+    ci = commit
+    co = checkout
+    df = diff
+    dfs = diff --staged
+    dfm = diff origin/master master
+    l = log --graph --decorate
+    rpull = pull --rebase --stat
+    st = status
+    un = reset
+    praise = blame
+    accept-ours = "!f() { files=\"$@\"; [ -z $files ] && files='.'; git checkout --ours -- $files; git add -u $files; }; f"
+    accept-theirs = "!f() { files=\"$@\"; [ -z $files ] && files='.'; git checkout --theirs -- $files; git add -u $files; }; f"
+[color]
+    ui = auto
+[core]
+    autocrlf = input
+    safecrlf = true
+    excludesfile = ~/.gitignore
+    preloadindex = true
+[push]
+    default = tracking
+[credential]
+    helper = cache --timeout=15552000
