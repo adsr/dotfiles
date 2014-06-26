@@ -16,7 +16,6 @@ pretty safe.
 ### Uninstall
 
     $ cd ~
-    $ git clone https://github.com/adsr/dotfiles
     $ ./dotfiles/install.sh -u -d   # Dry run mode
     $ ./dotfiles/install.sh -u      # Uninstall
     $ rm -rf dotfiles
