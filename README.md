@@ -20,7 +20,12 @@ pretty safe.
     $ ./dotfiles/install.sh -u -d   # Dry run mode
     $ ./dotfiles/install.sh -u      # Uninstall
     $ rm -rf dotfiles
-    
+
+### Update dotfiles from repo
+
+    $ cd ~/dotfiles
+    $ git pull --rebase
+
 ### Add a dotfile
 
 Just make one in `dotfiles/` and commit it to the repo. Run install.sh again.
@@ -29,5 +34,5 @@ Just make one in `dotfiles/` and commit it to the repo. Run install.sh again.
 
     $ cd ~
     $ rm .somerc
-    $ cd dotfiles 
+    $ cd ~/dotfiles
     $ git rm .somerc
