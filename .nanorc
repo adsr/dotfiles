@@ -1,4 +1,3 @@
-# set autoindent
 unset backup
 set const
 set morespace
