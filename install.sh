@@ -50,7 +50,7 @@ shopt -s dotglob
 for f in ${my_dir}/*; do
     f=$(basename $f)
     if [ "${f}" == "${my_self}" -o "${f}" == ".git" -o "${f}" == "README.md" ]; then
-        # Skip self
+        # Skip self and other known non-dotfiles
         continue
     fi
     my_target="${HOME}/${f}"
@@ -88,7 +88,7 @@ for f in ${my_dir}/*; do
         echo "    $my_cmd"
         eval ${my_cmd}
         if [ "$?" -ne "0" ]; then
-            "Non-zero exit code on last command; stopping"
+            echo "Non-zero exit code on last command; stopping" >&2
             exit 1
         fi
     fi
