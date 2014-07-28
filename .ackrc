@@ -1,1 +1,4 @@
---color
+--smart-case
+--ignore-dir=tmp/templates/compile
+--ignore-dir=htdocs/assets/dist
+--ignore-dir=tmp/Builda_JS
