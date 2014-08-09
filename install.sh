@@ -6,6 +6,7 @@ my_self=$(basename $0)
 my_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 my_repo=$(basename "${my_dir}")
 my_dry_run=""
+my_clobber=""
 my_uninstall=""
 
 # Say hello
@@ -15,16 +16,19 @@ echo
 
 # Parse args
 my_usage() {
-    echo "Usage: $0 -d(dry_run_mode) -u(uninstall) -h(help)" >&2
+    echo "Usage: $0 -d(dry_run_mode) -x(clobber) -u(uninstall) -h(help)" >&2
     exit 1
 }
-while getopts "duh" opt; do
+while getopts "duhx" opt; do
     case "${opt}" in
         d)
             my_dry_run="1"
             ;;
         u)
             my_uninstall="1"
+            ;;
+        x)
+            my_clobber="1"
             ;;
         *)
             my_usage
@@ -43,6 +47,10 @@ echo -n 'Run mode: '
 if [ -n "${my_uninstall}" ]; then echo "uninstall"; else echo "install"; fi
 echo -n ' Dry run: '
 if [ -n "${my_dry_run}" ]; then echo "yes"; else echo "no"; fi
+if [ -z "${my_uninstall}" ]; then
+    echo -n ' Clobber: '
+    if [ -n "${my_clobber}" ]; then echo "yes"; else echo "no"; fi
+fi
 echo
 
 # Symlink all files and directories
@@ -76,11 +84,17 @@ for f in ${my_dir}/*; do
     else
         # Install mode (create symlink)
         if [ -e "${my_target}" ]; then
-            # Skip if it already exists
-            echo "    ${my_target} already exists; skipping"
-            continue
+            # Already exists
+            if [ -n "${my_clobber}" ]; then
+                # Clobber mode on; delete!
+                my_cmd="rm -rf '${my_target}' && "
+            else
+                # Clobber mode off; skip
+                echo "    ${my_target} already exists; skipping"
+                continue
+            fi
         fi
-        my_cmd="ln -s ${my_source} ${my_target}"
+        my_cmd="${my_cmd}ln -s ${my_source} ${my_target}"
     fi
     if [ -n "${my_dry_run}" ]; then
         echo "    Dry run: $my_cmd"

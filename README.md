@@ -13,6 +13,17 @@ pretty safe.
     $ ./dotfiles/install.sh -d      # Dry run mode
     $ ./dotfiles/install.sh         # Install
 
+### Install (clobber mode)
+
+By default, the install script will only create a symlink for files that do
+not already exist relative to `$HOME`. In clobber mode (`-x`), if a file
+already exists, the install script issues an `rm -rf` against it and replaces
+it with a symlink. Therefore, danger!, use this option with care! Do a dry run
+first.
+
+    $ ./dotfiles/install.sh -d -x   # Dry run mode with clobber
+    $ ./dotfiles/install.sh -x      # Install with clobber
+
 ### Uninstall
 
     $ cd ~
