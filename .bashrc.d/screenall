@@ -1,0 +1,4 @@
+screenallfn() {
+    screen -X at \# stuff "$(echo -e "$@\r")"
+}
+alias screenall=screenallfn
