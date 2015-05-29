@@ -1,1 +1,1 @@
-alias pl="ps auxf | less -S"
+alias pl="ps -eH -o user,pid,ppid,pgid,%cpu,%mem,vsz,rss,tty,stat,etime,args | less -S"
