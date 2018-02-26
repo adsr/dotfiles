@@ -1,112 +1,94 @@
 #!/bin/bash
 
-my_version="0.1"
-my_url="https://github.com/adsr/dotfiles"
-my_self=$(basename $0)
-my_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-my_repo=$(basename "${my_dir}")
-my_dry_run=""
-my_clobber=""
-my_uninstall=""
+df_version="0.2"
+df_self=$(basename $0)
+df_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+df_dry_run=1
+df_clobber=0
+df_uninstall=0
 
-# Say hello
-echo "${my_repo} ${my_version}"
-echo "${my_url}"
+# Print header
+echo "dotfiles ${df_version}"
+echo 'https://github.com/adsr/dotfiles'
 echo
 
 # Parse args
-my_usage() {
-    echo "Usage: $0 -d(dry_run_mode) -x(clobber) -u(uninstall) -h(help)" >&2
-    exit 1
+df_usage() {
+    exit_code=$1
+    echo "Usage: $0 -w(wet_run_mode) -x(clobber) -u(uninstall) -h(help)" >&2
+    exit $exit_code
 }
-while getopts "duhx" opt; do
+while getopts "wuhx" opt; do
     case "${opt}" in
-        d)
-            my_dry_run="1"
-            ;;
-        u)
-            my_uninstall="1"
-            ;;
-        x)
-            my_clobber="1"
-            ;;
-        *)
-            my_usage
-            ;;
+        w) df_dry_run=0 ;;
+        u) df_uninstall=1 ;;
+        x) df_clobber=1 ;;
+        h) df_usage 0 ;;
+        *) df_usage 1 ;;
     esac
 done
 
-# Require HOME var
-if [ -z "${HOME}" ]; then
-    echo 'HOME var is empty; bailing' >&2
-    exit 1
-fi
-
 # Output run params
-echo -n 'Run mode: '
-if [ -n "${my_uninstall}" ]; then echo "uninstall"; else echo "install"; fi
-echo -n ' Dry run: '
-if [ -n "${my_dry_run}" ]; then echo "yes"; else echo "no"; fi
-if [ -z "${my_uninstall}" ]; then
-    echo -n ' Clobber: '
-    if [ -n "${my_clobber}" ]; then echo "yes"; else echo "no"; fi
-fi
+echo -n 'Run mode: '; [ $df_uninstall -eq 1 ] && echo 'uninstall' || echo 'install'
+echo -n ' Dry run: '; [ $df_dry_run -eq 1 ]   && echo 'yes' || echo 'no'
+echo -n ' Clobber: '; [ $df_clobber -eq 1 ]   && echo 'yes' || echo 'no'
+echo
+read -p "Press enter to continue, or Ctrl-C to abort..."
 echo
 
 # Symlink all files and directories
-shopt -s dotglob
-for f in ${my_dir}/*; do
-    f=$(basename $f)
-    if [ "${f}" == "${my_self}" -o "${f}" == ".git" -o "${f}" == "README.md" ]; then
-        # Skip self and other known non-dotfiles
-        continue
-    fi
-    my_target="${HOME}/${f}"
-    my_source="${my_dir}/${f}"
-    my_cmd=""
-    echo $f
-    if [ -n "${my_uninstall}" ]; then
+update_symlink() {
+    path_src=$1
+    path_sym="$HOME/$(basename $path_src)"
+    df_cmd=''
+    echo $path_src
+    if [ $df_uninstall -eq 1 ]; then
         # Uninstall mode (remove symlink)
-        if [ ! -e "${my_target}" ]; then
+        if [ ! -e "${path_sym}" ]; then
             # Skip if it does not exist
-            echo "    ${my_target} does not exist; skipping"
-            continue
-        elif [ ! -h "${my_target}" ]; then
+            echo "    ${path_sym} does not exist; skipping"
+            return
+        elif [ ! -h "${path_sym}" ]; then
             # Skip if it is not a symlink
-            echo "    ${my_target} exists but is not a symlink; skipping"
-            continue
-        elif [ $(readlink -f "${my_target}") != "${my_source}" ]; then
+            echo "    ${path_sym} exists but is not a symlink; skipping"
+            return
+        elif [ $(readlink -f "${path_sym}") != "${path_src}" ]; then
             # Skip if it is not a symlink to us
-            echo "    ${my_target} is a symlink but does not point to ${my_source}; skipping"
-            continue
+            echo "    ${path_sym} is a symlink but does not point to ${path_src}; skipping"
+            return
         fi
-        my_cmd="rm ${my_target}"
+        df_cmd="rm ${path_sym}"
     else
         # Install mode (create symlink)
-        if [ -e "${my_target}" ]; then
+        if [ -e "${path_sym}" ]; then
             # Already exists
-            if [ -n "${my_clobber}" ]; then
+            if [ $df_clobber -eq 1 ]; then
                 # Clobber mode on; delete!
-                my_cmd="rm -rf '${my_target}' && "
+                df_cmd="rm -rf ${path_sym} && "
             else
                 # Clobber mode off; skip
-                echo "    ${my_target} already exists; skipping"
-                continue
+                echo "    ${path_sym} already exists; skipping"
+                return
             fi
         fi
-        my_cmd="${my_cmd}ln -s ${my_source} ${my_target}"
+        df_cmd="${df_cmd}ln -s ${path_src} ${path_sym}"
     fi
-    if [ -n "${my_dry_run}" ]; then
-        echo "    Dry run: $my_cmd"
+    if [ $df_dry_run -eq 1 ]; then
+        echo "    Dry run: $df_cmd"
     else
-        echo "    $my_cmd"
-        eval ${my_cmd}
+        echo "    $df_cmd"
+        eval $df_cmd
         if [ "$?" -ne "0" ]; then
             echo "Non-zero exit code on last command; stopping" >&2
             exit 1
         fi
     fi
+}
+
+for f in $(find $df_dir -mindepth 1 -maxdepth 1 | grep -Pv '(README\.md|\.git|install\.sh)'); do
+    update_symlink $f
 done
 
+# Fin
 echo
 echo 'Done'
