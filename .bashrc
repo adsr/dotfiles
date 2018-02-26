@@ -1,13 +1,12 @@
 # Source global bashrc
 if [ -f /etc/bashrc ]; then
-    . /etc/bashrc
+    source /etc/bashrc
 fi
 
 # Source .bashrc.d
 if [ -d $HOME/.bashrc.d ]; then
     for x in $HOME/.bashrc.d/* ; do
-        test -f "$x" || continue
-        test -x "$x" || continue
-        . "$x"
+        test -f "$x" -a -x "$x" || continue
+        source "$x"
     done
 fi
