@@ -15,6 +15,7 @@
     st = status
     un = reset
     praise = blame
+    sm = submodule
 [color]
     ui = auto
 [core]
