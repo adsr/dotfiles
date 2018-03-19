@@ -6,6 +6,7 @@ df_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 df_dry_run=1
 df_clobber=0
 df_uninstall=0
+df_diff_cmd="$(command -v colordiff &>/dev/null && echo colordiff || echo diff)"
 
 # Print header
 echo "dotfiles ${df_version}"
@@ -68,7 +69,7 @@ update_symlink() {
             else
                 # Clobber mode off; skip
                 echo "    ${path_sym} already exists; skipping"
-                diff "${path_src}" "${path_sym}"
+                $df_diff_cmd -U10 "${path_sym}" "${path_src}"
                 return
             fi
         fi
