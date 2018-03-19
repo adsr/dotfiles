@@ -68,6 +68,7 @@ update_symlink() {
             else
                 # Clobber mode off; skip
                 echo "    ${path_sym} already exists; skipping"
+                diff "${path_src}" "${path_sym}"
                 return
             fi
         fi
