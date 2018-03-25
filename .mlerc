@@ -37,5 +37,10 @@ if [ -d '.git' ]; then
     echo '-kcmd_grep,M-q,git grep --color=never -P -i -I -n %s 2>/dev/null'
 fi
 
+# M-x t: tableize
+if command -v tableize &>/dev/null; then
+    echo '-kcmd_shell,M-x t,tableize 2>/dev/null'
+fi
+
 # default keymap to mle_as
 echo '-nmle_as'
