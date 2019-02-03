@@ -1,5 +1,10 @@
+#!/bin/bash
+
 # bail if not running interactively
 [[ $- == *i* ]] || return
+
+# source global bashrc
+[ -f /etc/bashrc ] && source /etc/bashrc
 
 # env path
 [ -d "${HOME}/go/bin"   ] && export PATH="${HOME}/go/bin:${PATH}"
