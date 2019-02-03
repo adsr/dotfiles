@@ -1,5 +1,0 @@
-ff() {
-    local IFS='*'               # Set internal field separator (IFS) to an '*'
-    local find_pattern="$*"     # All params separated by asterisk
-    find . -iwholename "*${find_pattern}*"
-}

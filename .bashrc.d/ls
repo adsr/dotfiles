@@ -1,7 +1,0 @@
-alias ls="ls --color=auto"
-alias ll="ls --color=auto -l"
-alias la="ls --color=auto -la"
-alias le="ls --color=auto -la | less"
-alias lh="ls --color=auto -lh"
-
-command -v dircolors &>/dev/null && eval "$(dircolors -b)"

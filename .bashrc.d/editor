@@ -1,7 +1,0 @@
-if which mle >/dev/null 2>&1 ; then
-    export EDITOR=mle
-elif which nano >/dev/null 2>&1 ; then
-    export EDITOR=nano
-elif which vim >/dev/null 2>&1 ; then
-    export EDITOR=vim
-fi
