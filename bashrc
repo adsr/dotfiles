@@ -115,6 +115,7 @@ defscrollback 10000
 hardstatus alwayslastline
 hardstatus string '%{= kG}[%{G}%H%{g}][%= %{= kw}%?%-Lw%?%{g}<%{W}%n%f: %t%?(%u)%?%{g}>%{w}%?%+Lw%?%?%= %{g}][%{B}%D, %m/%d %{G}%c%A]'
 termcapinfo xterm* ti@:te@
+term screen-256color
 EOD
 
 # write ~/.gdbinit
