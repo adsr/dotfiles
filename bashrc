@@ -121,6 +121,7 @@ EOD
 # write ~/.gdbinit
 write_if_missing ~/.gdbinit <<'EOD'
 set history save on
+add-auto-load-safe-path /home/adam/php-src/.gdbinit
 EOD
 
 # write ~/.gitconfig
