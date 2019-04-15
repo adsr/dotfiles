@@ -239,5 +239,9 @@ foreach ($table as $row) {
 }
 EOD
 
+# write ~/.php_history
+write_if_missing ~/.php_history <<'EOD'
+EOD
+
 # include .localbashrc
 [ -f ~/.localbashrc ] && source ~/.localbashrc
