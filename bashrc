@@ -68,6 +68,7 @@ write_if_missing() {
     local mode=$2
     local dname=$(dirname $fname)
     [ -f "$fname" ] && return
+    [ -L "$fname" ] && rm -f "$fname"
     [ -d "$dname" ] || return
     cat >"$fname"
     [ -n "$mode" ] && chmod "$mode" "$fname"
