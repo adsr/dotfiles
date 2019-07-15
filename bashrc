@@ -114,7 +114,7 @@ nethack off
 autodetach on
 defscrollback 10000
 hardstatus alwayslastline
-hardstatus string '%{= kG}[%{G}%H%{g}][%= %{= kw}%?%-Lw%?%{g}<%{W}%n%f: %t%?(%u)%?%{g}>%{w}%?%+Lw%?%?%= %{g}][%{B}%D, %m/%d %{G}%c%A]'
+hardstatus string '%{= kw}[%H]  %-w[%{= dW}%n %t%{-}]%+w'
 termcapinfo xterm* ti@:te@
 term screen-256color
 EOD
