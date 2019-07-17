@@ -86,6 +86,18 @@ mle_install() {(
     popd
     rm -rf $tmpdir
 )}
+bashrc_update() {
+    local url='https://raw.githubusercontent.com/adsr/dotfiles/master/bashrc'
+    local yn=''
+    local tmpf=$(mktemp)
+    wget -O "$tmpf" "$url" || { echo 'Failed'; return; }
+    diff -q "${BASH_SOURCE[0]}" "$tmpf" &>/dev/null
+    [ "$?" -eq 0 ] && { echo 'No update'; return; }
+    ( set -x; diff "${BASH_SOURCE[0]}" "$tmpf"; )
+    echo; read -p 'Update? [yN] >' yn
+    [ "$yn" = "y" ] && { cp -vf "$tmpf" "${BASH_SOURCE[0]}"; }
+    rm -f "$tmpf"
+}
 
 # friendlier less
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
