@@ -25,6 +25,8 @@ console.
 
 In `Application Autostart`, add `synclient` command to disable touchpad bs.
 
+    synclient RTCornerButton=0 RBCornerButton=0 VertEdgeScroll=0 ClickFinger1=0 ClickFinger2=0 MaxTapTime=0 MaxTapMove=0 MaxDoubleTapTime=0 SingleTapTimeout=0
+
 ### PocketJet 3 Plus
 
 See [pocketjet3plus-linux-setup][1]..
