@@ -1,6 +1,6 @@
 # dotfiles
 
-dotfiles, config, setup notes for Xubuntu on Lenovo X1 Carbon
+dotfiles, config, setup notes for Xubuntu 18.04 on Lenovo X1 Carbon Gen 6
 
 ### libvte
 
@@ -27,9 +27,45 @@ In `Application Autostart`, add `synclient` command to disable touchpad bs.
 
     synclient RTCornerButton=0 RBCornerButton=0 VertEdgeScroll=0 ClickFinger1=0 ClickFinger2=0 MaxTapTime=0 MaxTapMove=0 MaxDoubleTapTime=0 SingleTapTimeout=0
 
+### Screen lock and suspend
+
+We are affected by [this bug][2] which makes screen locking/unlocking painful.
+Declare bankruptcy on `light-locker` even though it is probably not its fault.
+
+    sudo apt remove light-locker
+
+Compile xscreensaver with `--with-systemd` and install. In version 5.43,
+`make install` does not install `xscreensaver-systemd`. Do that manually. Then
+make a user service:
+
+    # /home/adam/.config/systemd/user/xscreensaver.service
+    [Unit]
+    Description=XScreenSaver
+    [Service]
+    ExecStart=/usr/local/bin/xscreensaver -no-splash -verbose -no-capture-stderr
+    [Install]
+    WantedBy=default.target
+
+    systemctl --user enable xscreensaver
+    systemctl --user start xscreensaver
+
+Disable `New Login` button:
+
+    echo -e '\nxscreensaver.newLoginCommand:\n' | tee -a ~/.Xdefaults
+    xrdb < ~/.Xdefaults
+    xscreensaver-command -restart
+
+Make `xflock4` work again (`PATH` does not include `/usr/local/bin`):
+
+    sudo sed -i 's|^PATH=.*|PATH=/bin:/usr/bin:/usr/local/bin|g' /usr/bin/xflock4
+
+Set `Sleep state` to `Linux` in BIOS otherwise laptop does not wakeup from
+suspend on lid open.
+
 ### PocketJet 3 Plus
 
 See [pocketjet3plus-linux-setup][1]..
 
 [0]: https://github.com/adsr/vte
 [1]: https://github.com/adsr/pocketjet3plus-linux-setup
+[2]: https://github.com/the-cavalry/light-locker/issues/114
