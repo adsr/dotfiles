@@ -7,9 +7,9 @@
 [ -f /etc/bashrc ] && source /etc/bashrc
 
 # env path
-[ -d "${HOME}/go/bin"   ] && export PATH="${HOME}/go/bin:${PATH}"
-[ -d "${HOME}/.bin"     ] && export PATH="${HOME}/.bin:${PATH}"
-[ -d "${HOME}/bin"      ] && export PATH="${HOME}/bin:${PATH}"
+[ -d "${HOME}/go/bin" ] && export PATH="${HOME}/go/bin:${PATH}"
+[ -d "${HOME}/.bin"   ] && export PATH="${HOME}/.bin:${PATH}"
+[ -d "${HOME}/bin"    ] && export PATH="${HOME}/bin:${PATH}"
 
 # env prompt
 export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
@@ -62,6 +62,24 @@ ff() {
 }
 screenall() {
     screen -X at \# stuff "$(echo -e "$@\r")"
+}
+dumpflow() {
+    local OPTIND
+    local iface='any'
+    local hex=1
+    while getopts ":ai:" opt; do
+        case $opt in
+            a) hex=0 ;;
+            i) iface=$OPTARG ;;
+        esac
+    done
+    shift $((OPTIND-1))
+    local filter=$1
+    if [ "$hex" -eq 1 ]; then
+        ( set -x; sudo tcpdump -li "$iface" "$filter" -w- | tcpflow -r- -gBCDd5 )
+    else
+        ( set -x; sudo tcpdump -li "$iface" "$filter" -w- | tcpflow -r- -gBCd5 | tr -c '[:print:]'$'\n'$'\x1b' '.' )
+    fi
 }
 write_if_missing() {
     local fname=$1
