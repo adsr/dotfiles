@@ -58,11 +58,9 @@ alias xcopy='xclip -sel c'
 [ -f ~/.bash_aliases ] && source ~/.bash_aliases
 
 # functions
-ff() {
-    local IFS='*'
-    local patt="$*"
-    find . -iwholename "*${patt}*"
-}
+ff()  { local IFS='*'; local patt="$*"; find . -iwholename "*${patt}*"; }
+fd()  { local IFS='*'; local patt="$*"; find . -type d -iname "*${patt}*"; }
+fcd() { local d=$(fd "$@" | head -n1); [ -n "$d" ] && cd "$d"; }
 screenall() {
     screen -X at \# stuff "$(echo -e "$@\r")"
 }
