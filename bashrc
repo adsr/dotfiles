@@ -30,6 +30,9 @@ export HISTFILESIZE=16384
 # env less
 export LESS=-Ri
 
+# env lynx
+export LYNX_CFG=~/.lynx.cfg
+
 # env editor
 for e in mle vim nano; do
     command -v $e &>/dev/null || continue;
@@ -272,6 +275,21 @@ EOD
 
 # write ~/.php_history
 write_if_missing ~/.php_history <<'EOD'
+EOD
+
+# write ~/.lynx.cfg
+write_if_missing ~/.lynx.cfg <<'EOD'
+ACCEPT_ALL_COOKIES:TRUE
+ASSUME_CHARSET:utf-8
+CHARACTER_SET:utf-8
+GLOBAL_EXTENSION_MAP:/etc/mime.types
+GLOBAL_MAILCAP:
+NO_PAUSE:TRUE
+SCROLLBAR:TRUE
+SHOW_CURSOR:TRUE
+SSL_CERT_FILE:/etc/ssl/certs/ca-certificates.crt
+STARTFILE:https://duckduckgo.com
+UNDERLINE_LINKS:TRUE
 EOD
 
 # include .localbashrc
