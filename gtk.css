@@ -1,0 +1,2 @@
+/* Make workspace switcher buttons narrower like they used to be */
+#xfce-panel-toggle-button { min-width: 8px; }
