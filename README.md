@@ -15,11 +15,22 @@ only working partially.
 
 ### xfce4-terminal
 
-Kill all instances of `xfce4-terminal` and run these in `xterm` or from a
-console.
+To install terminal config, kill all instances of `xfce4-terminal` and run these
+in `xterm` or from a console.
 
     cp -vf ~/dotfiles/xf4term-terminalrc ~/.config/xfce4/terminal/terminalrc
-    cp -vf ~/dotfiles/xf4term-accels.scm ~/.config/xfce4/terminal/xf4term-accels.scm
+    cp -vf ~/dotfiles/xf4term-accels.scm ~/.config/xfce4/terminal/accels.scm
+
+### xfce4-panel
+
+Right click on panel, `Panel Preferences...`, `Backup and restore`, `Import`,
+select `~/dotfiles/xf4panel-config.txt.tar.bz2`.
+
+### Workspace switcher icon width
+
+Make the workspace switcher icons narrower like they used to be.
+
+    cp -vf ~/dotfiles/gtk.css ~/.config/gtk-3.0/gtk.css
 
 ### Synaptics Touchpad
 
@@ -27,35 +38,55 @@ In `Application Autostart`, add `synclient` command to disable touchpad bs.
 
     synclient RTCornerButton=0 RBCornerButton=0 VertEdgeScroll=0 ClickFinger1=0 ClickFinger2=0 MaxTapTime=0 MaxTapMove=0 MaxDoubleTapTime=0 SingleTapTimeout=0
 
-### Screen lock and suspend
+### Other startup commands
+
+    setxkbmap -layout us -option ctrl:nocaps # Make CapsLock a Ctrl key
+    redshift-gtk -l 40.834398:-74.177090 -t 6500K:5000K # Color temp adjustment
+
+### LightDM screen resolution
+
+I typically lower resolution because my vision is not what it used to be, but
+display settings do not apply to lightdm, leading to a slow screen resolution
+switch at login time. Force lightdm to use a 1920x1080 res.
+
+    cp -vf ~/dotfiles/lightdm-screen-res.sh ~/bin/lightdm-screen-res.sh
+    cp -vf ~/dotfiles/lightdm-screen-res.conf /etc/lightdm/lightdm.conf.d/lightdm-screen-res.conf
+
+### Screen lock, suspend, screensaver
 
 We are affected by [this bug][2] which makes screen locking/unlocking painful.
 Declare bankruptcy on `light-locker` even though it is probably not its fault.
 
     sudo apt remove light-locker
 
-Compile xscreensaver with `--with-systemd` and install. In version 5.43,
-`make install` does not install `xscreensaver-systemd`. Do that manually. Then
-make a user service:
+Compile xscreensaver with `--with-systemd` and install. Overwrite
+`xscreensaver/utils/images/logo-180.xpm` with
+`~/dotfiles/xscreensaver-logo-180.xpm` to replace the default fire logo with a
+classic Tux mascot. In version 5.43, `make install` does not install
+`xscreensaver-systemd`. Do that manually. Then make a user service.
 
     # /home/adam/.config/systemd/user/xscreensaver.service
     [Unit]
     Description=XScreenSaver
+    After=graphical.target
     [Service]
-    ExecStart=/usr/local/bin/xscreensaver -no-splash -verbose -no-capture-stderr
+    Environment=DISPLAY=:0
+    ExecStart=/usr/local/bin/xscreensaver -no-splash -verbose
+    Restart=on-failure
+    RestartSec=10s
     [Install]
-    WantedBy=default.target
+    WantedBy=graphical.target
 
     systemctl --user enable xscreensaver
     systemctl --user start xscreensaver
 
-Disable `New Login` button:
+Copy `Xresources` for xscreensaver customization.
 
-    echo -e '\nxscreensaver.newLoginCommand:\n' | tee -a ~/.Xdefaults
-    xrdb < ~/.Xdefaults
-    xscreensaver-command -restart
+    cp -vf ~/dotfiles/Xresources ~/.Xresources
+    xrdb -merge ~/.Xresources
+    systemctl --user restart xscreensaver.service
 
-Make `xflock4` work again (`PATH` does not include `/usr/local/bin`):
+Make `xflock4` work again (`PATH` does not include `/usr/local/bin`).
 
     sudo sed -i 's|^PATH=.*|PATH=/bin:/usr/bin:/usr/local/bin|g' /usr/bin/xflock4
 
@@ -64,7 +95,7 @@ suspend on lid open.
 
 ### PocketJet 3 Plus
 
-See [pocketjet3plus-linux-setup][1]..
+See [pocketjet3plus-linux-setup][1].
 
 [0]: https://github.com/adsr/vte
 [1]: https://github.com/adsr/pocketjet3plus-linux-setup
