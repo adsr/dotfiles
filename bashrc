@@ -12,7 +12,7 @@
 [ -d "${HOME}/bin"    ] && export PATH="${HOME}/bin:${PATH}"
 
 # env prompt
-export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+export PS1='\[\033[01;32m\]\u\[\033[00;32m\]@\[\033[01;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
 # env locale
 export LC_ALL=en_US.UTF-8
