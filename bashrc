@@ -175,6 +175,7 @@ l = log --graph --decorate
 ls = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
 ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
 rpop = "!git stash && git pull --rebase && git stash pop"
+spush = "!v=$(git remote get-url --push origin | perl -pe 's|^https?://([^/]+)/([^/]+)/(.*)$|git@\\1:\\2/\\3|g') && git push $v $(git rev-parse --abbrev-ref HEAD)"
 rpull = pull --rebase --stat
 st = status
 un = reset
