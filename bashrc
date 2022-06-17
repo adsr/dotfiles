@@ -244,30 +244,46 @@ write_if_missing ~/bin/tableize 755 <<'EOD'
 $all = rtrim(file_get_contents('php://stdin'));
 $lines = explode("\n", $all);
 $colw = [];
+$negv = [];
 $tabw = 0;
 $table = [];
+$opt = getopt('l:e:v:');
+$climit = !empty($opt['l']) ? (int)$opt['l'] : -1;
+$rmatch = !empty($opt['e']) ? "/{$opt['e']}/" : null;
+$rfilter = !empty($opt['v']) ? "/{$opt['v']}/" : null;
 foreach ($lines as $line) {
     $match = null;
-    if (preg_match('@^(\s*)(.+)$@', $line, $match)) {
+    if ($rfilter && @preg_match($rfilter, $line)) {
+        $table[] = rtrim($line, "\n");
+    } else if ($rmatch && !@preg_match($rmatch, $line)) {
+        $table[] = rtrim($line, "\n");
+    } else if (preg_match('@^(\s*)(.+)$@', $line, $match)) {
         $tabw = max($tabw, strlen($match[1]));
-        $cols = preg_split('@\s+@', rtrim($match[2]));
-        for ($i = 0; $i < count($cols); $i++) {
-            $colw[$i] = max($colw[$i] ?? 1, strlen($cols[$i])+1);
+        $row = preg_split('@\s+@', rtrim($match[2]), $climit);
+        foreach ($row as $i => $col) {
+            $negv[$i] = ($negv[$i] ?? 0) | (int)$col < 0 ? 1 : 0;
+            $colw[$i] = max($colw[$i] ?? 1, strlen($col) + 1);
         }
-        $table[] = $cols;
+        $table[] = $row;
     } else {
-        $table[] = null;
+        $table[] = '';
     }
 }
 foreach ($table as $row) {
-    if ($row !== null) {
-        echo str_repeat(' ', $tabw);
+    if (is_string($row)) {
+        echo $row;
+    } else {
+        echo str_repeat(' ', max(0, $tabw - $negv[0]));
         $colc = count($row);
         foreach ($row as $i => $col) {
+            if ($negv[$i] && (int)$col >= 0) {
+                $col = ' ' . $col;
+            }
             if ($i === $colc - 1) {
                 echo rtrim($col);
             } else {
-                printf("%-{$colw[$i]}s", $col);
+                $w = $colw[$i] + $negv[$i];
+                printf("%-{$w}s", $col);
             }
         }
     }
