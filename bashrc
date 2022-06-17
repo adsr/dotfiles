@@ -50,7 +50,7 @@ shopt -s checkwinsize
 alias ls='ls --color=auto'
 alias ll='ls --color=auto -lF'
 alias la='ls --color=auto -alF'
-alias pl="ps -eH -o user,pid,ppid,pgid,%cpu,%mem,vsz,rss,tty,stat,etime,args | less -S"
+alias pl="ps -eH -o user,pid,ppid,pgid,%cpu,%mem,vsz:8,rss:8,tty,stat,wchan:16,etime,args | less -S"
 alias grep='grep --color=auto'
 alias gg='git grep -iP'
 alias bell='echo -e "\a"'
