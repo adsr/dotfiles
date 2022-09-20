@@ -7,9 +7,10 @@
 [ -f /etc/bashrc ] && source /etc/bashrc
 
 # env path
-[ -d "${HOME}/go/bin" ] && export PATH="${HOME}/go/bin:${PATH}"
-[ -d "${HOME}/.bin"   ] && export PATH="${HOME}/.bin:${PATH}"
-[ -d "${HOME}/bin"    ] && export PATH="${HOME}/bin:${PATH}"
+[ -d "${HOME}/go/bin"     ] && export PATH="${HOME}/go/bin:${PATH}"
+[ -d "${HOME}/.bin"       ] && export PATH="${HOME}/.bin:${PATH}"
+[ -d "${HOME}/bin"        ] && export PATH="${HOME}/bin:${PATH}"
+[ -d "${HOME}/.local/bin" ] && export PATH="${HOME}/.local/bin:${PATH}"
 
 # env prompt (different color for root)
 ps1_color=32; [ "$EUID" = 0 ] && ps1_color=35
