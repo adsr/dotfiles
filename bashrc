@@ -174,6 +174,7 @@ co = checkout
 df = diff
 dfs = diff --staged
 dfm = diff origin/master master
+stp = status --porcelain
 l = log --graph --decorate
 ls = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
 ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
