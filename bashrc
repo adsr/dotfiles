@@ -215,6 +215,7 @@ echo '-w1'                                      # soft word wrap
 echo '-c80'                                     # mark col 80
 echo '-b1'                                      # highlight bracket pairs
 echo '-i1'                                      # auto indent
+echo '-u1'                                      # coarse undo
 echo '-Ssyn_makefile,(/?Makefile|\.mk)$,4,0'    # syn_makefile
 echo '-s^\t+,,515,0'
 echo '-s^[^:\s]+(?=:),,260,0'
