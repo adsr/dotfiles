@@ -63,7 +63,7 @@ alias xcopy='xclip -sel c'
 # functions
 ff()  { local IFS='*'; local patt="$*"; find . -iwholename "*${patt}*"; }
 fo()  { ff "$@" | head -n1; }
-fd()  { local IFS='*'; local patt="$*"; find . -type d -iname "*${patt}*"; }
+fd()  { local IFS='*'; local patt="$*"; find . -type d -iwholename "*${patt}*"; }
 fcd() { local d=$(fd "$@" | head -n1); [ -n "$d" ] && cd "$d"; }
 screenall() {
     screen -X at \# stuff "$(echo -e "$@\r")"
