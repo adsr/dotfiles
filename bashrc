@@ -58,6 +58,7 @@ alias bell='echo -e "\a"'
 alias loc='echo "$(hostname):$(pwd)"'
 alias ..='cd ..'
 alias xcopy='xclip -sel c'
+alias batt='cat /sys/class/power_supply/BAT0/capacity'
 [ -f ~/.bash_aliases ] && source ~/.bash_aliases
 
 # functions
