@@ -27,8 +27,8 @@ export GOPATH=~/go
 
 # env history
 export HISTCONTROL=ignoredups
-export HISTSIZE=16384
-export HISTFILESIZE=16384
+export HISTSIZE=1048576
+export HISTFILESIZE=1048576
 
 # env less
 export LESS=-Ri
