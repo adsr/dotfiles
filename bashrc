@@ -186,6 +186,7 @@ st = status
 un = reset
 praise = blame
 sm = submodule
+chp = cherry-pick
 [color]
 ui = auto
 [core]
