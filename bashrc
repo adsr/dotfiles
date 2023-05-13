@@ -296,6 +296,13 @@ foreach ($table as $row) {
 }
 EOD
 
+# write ~/bin/foldw
+write_if_missing ~/bin/foldw 755 <<'EOD'
+#!/bin/bash
+w=${1:-79}
+cat | fold -s -w $w | sed -E 's/\s+$//g'
+EOD
+
 # write ~/.php_history
 write_if_missing ~/.php_history <<'EOD'
 EOD
