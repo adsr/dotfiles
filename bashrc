@@ -65,9 +65,11 @@ alias batt='cat /sys/class/power_supply/BAT0/capacity'
 
 # functions
 ff()  { local IFS='*'; local patt="$*"; find . -iwholename "*${patt}*"; }
-fo()  { ff "$@" | head -n1; }
 fd()  { local IFS='*'; local patt="$*"; find . -type d -iwholename "*${patt}*"; }
+fo()  { ff "$@" | head -n1; }
 fcd() { local d=$(fd "$@" | head -n1); [ -n "$d" ] && cd "$d"; }
+fdd() { find "${1:-.}" -type d; }
+fdf() { find "${1:-.}" -type f; }
 screenall() {
     screen -X at \# stuff "$(echo -e "$@\r")"
 }
