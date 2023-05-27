@@ -14,8 +14,10 @@
 
 # env prompt (different color for root)
 ps1_color=32; [ "$EUID" = 0 ] && ps1_color=35
-export PS1="\[\033[01;${ps1_color}m\]\u\[\033[00;${ps1_color}m\]@\[\033[01;${ps1_color}m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "
+ps1_prompt='$'; [ "$EUID" = 0 ] && ps1_prompt='#'
+export PS1="\[\033[01;${ps1_color}m\]\u\[\033[00;${ps1_color}m\]@\[\033[01;${ps1_color}m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]${ps1_prompt} "
 unset ps1_color
+unset ps1_prompt
 
 # env locale
 export LC_ALL=en_US.UTF-8
