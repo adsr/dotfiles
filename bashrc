@@ -125,6 +125,8 @@ bashrc_update() {
     echo; read -rp 'Update? [yN] >' yn
     [ "$yn" = "y" ] && { cp -vf "$tmpf" "${BASH_SOURCE[0]}"; }
     rm -f "$tmpf"
+    echo; read -rp 'Reload? [yN] >' yn
+    [ "$yn" = "y" ] && { source "${BASH_SOURCE[0]}"; }
 }
 
 # friendlier less
