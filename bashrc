@@ -71,7 +71,7 @@ fcd() { local d=$(fd "$@" | head -n1); [ -n "$d" ] && cd "$d"; }
 fdd() { find "${1:-.}" -type d; }
 fdf() { find "${1:-.}" -type f; }
 screenall() {
-    screen -X at \# stuff "$(echo -e "$@\r")"
+    screen -X at \# stuff "$(echo -e "$*\r")"
 }
 dumpflow() {
     local OPTIND
@@ -94,7 +94,7 @@ dumpflow() {
 write_if_missing() {
     local fname=$1
     local mode=$2
-    local dname=$(dirname $fname)
+    local dname=$(dirname "$fname")
     [ -f "$fname" ] && return
     [ -L "$fname" ] && rm -f "$fname"
     [ -d "$dname" ] || return
@@ -104,15 +104,15 @@ write_if_missing() {
 mle_install() {(
     set -e
     local tmpdir=$(mktemp -d)
-    pushd $tmpdir
+    pushd "$tmpdir"
     git clone --recursive https://github.com/adsr/mle.git
     pushd mle
     make mle_vendor=1
-    mkdir -vp $HOME/bin
-    cp -vf mle $HOME/bin
+    mkdir -vp "$HOME/bin"
+    cp -vf mle "$HOME/bin"
     popd
     popd
-    rm -rf $tmpdir
+    rm -rf "$tmpdir"
 )}
 bashrc_update() {
     local url='https://raw.githubusercontent.com/adsr/dotfiles/master/bashrc'
@@ -122,7 +122,7 @@ bashrc_update() {
     diff -q "${BASH_SOURCE[0]}" "$tmpf" &>/dev/null
     [ "$?" -eq 0 ] && { echo 'No update'; return; }
     ( set -x; diff "${BASH_SOURCE[0]}" "$tmpf"; )
-    echo; read -p 'Update? [yN] >' yn
+    echo; read -rp 'Update? [yN] >' yn
     [ "$yn" = "y" ] && { cp -vf "$tmpf" "${BASH_SOURCE[0]}"; }
     rm -f "$tmpf"
 }
