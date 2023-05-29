@@ -2,7 +2,7 @@
 ColorForeground=#d3d3d7d7cfcf
 ColorBackground=#131926
 ColorPalette=rgb(44,62,80);rgb(192,57,43);rgb(39,174,96);rgb(243,156,18);rgb(38,118,171);rgb(142,68,173);rgb(26,146,170);rgb(170,170,170);rgb(52,73,94);rgb(231,76,60);rgb(46,204,113);rgb(241,196,15);rgb(52,152,219);rgb(176,103,206);rgb(69,186,210);rgb(255,255,255)
-FontName=DejaVu Sans Mono 9
+FontName=DejaVu Sans Mono 11
 MiscAlwaysShowTabs=FALSE
 MiscBell=FALSE
 MiscBellUrgent=TRUE
@@ -38,3 +38,6 @@ ColorSelection=#163b59
 ColorBold=#ffffff
 TabActivityColor=#efef29292929
 MiscTabKeyCycle=TRUE
+MiscSearchDialogOpacity=100
+MiscShowUnsafePasteDialog=TRUE
+
