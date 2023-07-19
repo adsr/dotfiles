@@ -177,6 +177,7 @@ user = adsr
 [alias]
 br = branch
 ci = commit
+unci = reset --soft HEAD~1
 co = checkout
 df = diff
 dfs = diff --staged
