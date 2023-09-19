@@ -19,7 +19,7 @@ ps1_color() {
     if [ "$EUID" = 0 ]; then
         color=35
         prompt='#'
-    elif { hostname -s | grep -Eq '^a[0-9]{4}'; }; then
+    elif { hostname -f | grep -Eq -e '^a[0-9]{4}' -e $'\x65\x74\x73\x79'; }; then
         color='38;5;208'
         prompt='$'
     fi
