@@ -1,4 +1,24 @@
+xscreensaver-auth.default.passwd.headingFont:            dejavu sans mono bold 12
+xscreensaver-auth.default.passwd.buttonFont:             dejavu sans mono bold 12
+xscreensaver-auth.default.passwd.bodyFont:               dejavu sans mono 12
+xscreensaver-auth.default.passwd.errorFont:              dejavu sans mono 12
+xscreensaver-auth.default.passwd.labelFont:              dejavu sans mono 12
+xscreensaver-auth.default.passwd.dateFont:               dejavu sans mono 12
+xscreensaver-auth.default.passwd.unameFont:              dejavu sans mono 12
+xscreensaver-auth.default.passwd.foreground:             #c0c0c0
+xscreensaver-auth.default.passwd.background:             #202020
+xscreensaver-auth.default.passwd.topShadowColor:         #202020
+xscreensaver-auth.default.passwd.bottomShadowColor:      #202020
+xscreensaver-auth.default.passwd.button.foreground:      #202020
+xscreensaver-auth.default.passwd.button.background:      #c0c0c0
+xscreensaver-auth.default.passwd.thermometer.foreground: #f8bf07
+xscreensaver-auth.default.passwd.thermometer.background: #000000
+xscreensaver-auth.default.passwd.logo.background:        #202020
+xscreensaver-auth.default.newLoginCommand:
+
 xterm*termName:        xterm-256color
+xterm*background:      black
+xterm*foreground:      gray80
 xterm*metaSendsEscape: true
 xterm*cursorBlink:     true
 xterm*maximized:       true
@@ -9,9 +29,9 @@ xterm*faceName:        DejaVu Sans Mono
 xterm*faceSize:        11
 xterm*saveLines:       1048576
 xterm*translations: #override \n\
-    Ctrl Shift <Key>X:  insert-selection(SELECT) \n\
-    Ctrl Shift <Key>C:  copy-selection(CLIPBOARD) \n\
-    Ctrl Shift <Key>V:  insert-selection(CLIPBOARD)
+    Ctrl Shift <Key>X: insert-selection(SELECT) \n\
+    Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \n\
+    Ctrl Shift <Key>V: insert-selection(CLIPBOARD)
 xterm*scrollbar.foreground: gray50
 xterm*scrollbar.background: black
 xterm*scrollbar.thumb:      black
