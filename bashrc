@@ -12,12 +12,21 @@
 [ -d "${HOME}/bin"        ] && export PATH="${HOME}/bin:${PATH}"
 [ -d "${HOME}/.local/bin" ] && export PATH="${HOME}/.local/bin:${PATH}"
 
-# env prompt (different color for root)
-ps1_color=32; [ "$EUID" = 0 ] && ps1_color=35
-ps1_prompt='$'; [ "$EUID" = 0 ] && ps1_prompt='#'
-export PS1="\[\033[01;${ps1_color}m\]\u\[\033[00;${ps1_color}m\]@\[\033[01;${ps1_color}m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]${ps1_prompt} "
-unset ps1_color
-unset ps1_prompt
+# env prompt
+ps1_color() {
+    local color=32
+    local prompt='$'
+    if [ "$EUID" = 0 ]; then
+        color=35
+        prompt='#'
+    elif { hostname -s | grep -Eq '^a[0-9]{4}'; }; then
+        color='38;2;255;165;0'
+        prompt='$'
+    fi
+    echo "\[\033[01;${color}m\]\u\[\033[00;${color}m\]@\[\033[01;${color}m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]${prompt} "
+}
+export PS1=$(ps1_color)
+unset -f ps1_color
 
 # env locale
 export LC_ALL=en_US.UTF-8
