@@ -181,6 +181,8 @@ write_if_missing ~/.gitconfig <<'EOD'
 [user]
 name = Adam Saponara
 email = as@php.net
+[include]
+path = .localgitconfig
 [github]
 user = adsr
 [alias]
