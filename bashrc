@@ -218,11 +218,6 @@ default = tracking
 helper = cache --timeout=15552000
 EOD
 
-# write ~/.inputrc
-write_if_missing ~/.inputrc <<'EOD'
-"\C-d": beginning-of-line
-EOD
-
 # write ~/.wgetrc
 write_if_missing ~/.wgetrc <<'EOD'
 check-certificate=off
