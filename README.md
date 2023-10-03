@@ -62,3 +62,11 @@ wakeup from suspend on lid open.
 See [pocketjet3plus-linux-setup][1].
 
 [1]: https://github.com/adsr/pocketjet3plus-linux-setup
+
+### Windows 9x Theme
+
+    mkdir ~/.themes
+    cd $_
+    tar xf ~/dotfiles/Redmond.tgz
+
+Change theme in Window Manager settings.
