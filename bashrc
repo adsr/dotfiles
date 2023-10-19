@@ -79,6 +79,9 @@ fo()  { ff "$@" | head -n1; }
 fcd() { local d=$(fd "$@" | head -n1); [ -n "$d" ] && cd "$d"; }
 fdd() { find "${1:-.}" -type d; }
 fdf() { find "${1:-.}" -type f; }
+ffplay_ts() {
+    ffplay -vf "drawtext=fontsize=40:text='%{pts\:hms}':box=1:x=0:y=h-lh" "$@"
+}
 screenall() {
     screen -X at \# stuff "$(echo -e "$*\r")"
 }
