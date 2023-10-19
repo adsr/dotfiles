@@ -373,5 +373,81 @@ xterm*scrollbar.translations: #override \n\
     <BtnUp>:            NotifyScroll(Proportional) EndScroll()
 EOD
 
+# write ~/bin/ahist
+write_if_missing ~/bin/ahist 755 <<'EOD'
+#!/usr/bin/env php
+<?php
+$nrows = max(24, (int)shell_exec('tput lines'));
+$nrows -= 4; // 1st prompt, 2nd prompt, screen status, +1 for good measure
+$ncols = max(80, (int)shell_exec('tput cols'));
+$buckets = array_reduce(
+    ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'],
+    function ($a, $v) { $a[$v] = strtotime("+1 {$v}", 0); return $a; }
+);
+$opt = getopt('hi:s:Ff:g:');
+isset($opt['h']) && die("Usage: {$_SERVER['PHP_SELF']} -i <interval_str> -s <interval_s> -F(fill) -f <tfmt_out> -g <tfmt_in>\n");
+$tformat_out = $opt['f'] ?? 'Y-m-d H:i:s';
+$tformat_in = $opt['g'] ?? null;
+$tmin = null;
+$tmax = null;
+$tseries = [];
+while (($line = fgets(STDIN)) !== false) {
+    if ($tformat_in) try {
+        $ats = date_parse_from_format($tformat_in, $line);
+        $ts = mktime($ats['hour'], $ats['minute'], $ats['second'],
+                     $ats['month'] ?: 1, $ats['day'] ?: 1, $ats['year']); // tz
+    } catch (Exception $e) {
+        continue;
+    } else if (($ts = strtotime($line)) === false) {
+        continue;
+    }
+    if ($tmin === null || $ts < $tmin) $tmin = $ts;
+    if ($tmax === null || $ts > $tmax) $tmax = $ts;
+    $tseries[] = $ts;
+}
+if (empty($tseries)) exit(0); // empty time series
+$trange = $tmax - $tmin;
+$tplus = match (true) {
+    isset($opt['F']) => sprintf('+%d second', max(1, intdiv($trange, $nrows))),
+    isset($opt['s']) => sprintf('+%d second', max(1, (int)$opt['s'])),
+    isset($opt['i']) => sprintf('+%s', ltrim($opt['i'], '+')),
+    default => sprintf('+1 %s', (function() use ($trange, $nrows, $buckets) {
+        foreach ($buckets as $bucket => $bucket_s) {
+            if (intdiv($trange, $bucket_s) > $nrows) continue;
+            return $bucket;
+        }
+        return array_key_last($buckets);
+    })()),
+};
+sort($tseries, SORT_NUMERIC);
+$tsb = null;
+$tsb_next = $tseries[0];
+$tsb_advance = function() use (&$tsb, &$tsb_next, $tplus) {
+    $tsb = $tsb_next !== null ? $tsb_next : strtotime($tplus, $tsb);
+    $tsb_next = strtotime($tplus, $tsb);
+    if ($tsb === $tsb_next || !is_int($tsb_next)) exit(1); // invalid tplus
+};
+$tsb_advance();
+$hist = [];
+foreach ($tseries as $ts) {
+    while ($ts >= $tsb_next) $tsb_advance();
+    $hist[$tsb] = ($hist[$tsb] ?? 0) + 1;
+}
+$vmin = min($hist);
+$vmax = max($hist);
+$tbmin = min(array_keys($hist));
+$tbmax = max(array_keys($hist));
+$vlen = strlen($vmax);
+$tsflen = strlen(gmdate($tformat_out));
+$vwidth = max($ncols - $vlen - 1 - $tsflen - 1, 1);
+$vbucket = max(1.0, $vmax / $vwidth);
+for ($tsb = $tbmin, $tsb_next = null; $tsb <= $tbmax; $tsb_advance()) {
+    $v = $hist[$tsb] ?? 0;
+    $nv = (int)round($v / $vbucket);
+    $tsf = gmdate($tformat_out, $tsb);
+    printf("%s %s %d\n", $tsf, str_repeat('#', $nv), $v);
+}
+EOD
+
 # include .localbashrc
 [ -f ~/.localbashrc ] && source ~/.localbashrc
