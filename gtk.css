@@ -1,12 +1,16 @@
 /* Make workspace switcher buttons narrower like they used to be */
 #xfce-panel-toggle-button { min-width: 8px; }
 
-
 /* Blink suggested-action window buttons forever */
 @keyframes blink {
-    0%   { background: inherit; }
-    100% { background: blue; }
+    0%   { background-color: inherit; }
+    50%  { background-color: inherit; }
+    51%  { background-color: blue; }
+    100% { background-color: blue; }
 }
 .xfce4-panel button.suggested-action {
-    animation: blink 500ms infinite alternate linear;
+    animation: blink 1s infinite linear;
+    animation-delay: -500ms;
+    background-image: none;
+    transition-property: none;
 }
