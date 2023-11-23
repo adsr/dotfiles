@@ -448,5 +448,32 @@ for ($tsb = $tbmin, $tsb_next = null; $tsb <= $tbmax; $tsb_advance()) {
 }
 EOD
 
+# write ~/bin/descstat
+write_if_missing ~/bin/descstat 755 <<'EOD'
+#!/bin/bash
+read -r -d '' awk_program <<'EOE'
+BEGIN                  { alen=0 }
+/^[-+]?[0-9]*.?[0-9]*/ { a[alen++]=$0 }
+END                    {
+    if (alen<1) exit
+    asort(a) # reindexes 1->n
+    sum=0; for (i in a) sum+=a[i]
+    mean=sum/alen
+    var=0; for (i in a) var+=(a[i]-mean)^2
+    var/=alen
+    stddev=sqrt(var)
+    min=a[1]
+    max=a[alen]
+    median=a[alen/2]
+    p95=a[int(alen*0.95)]
+    p99=a[int(alen*0.99)]
+    if (label) printf("%s: ", label)
+    printf("n=%d min=%.3f max=%.3f mean=%.3f median=%.3f p95=%.3f p99=%.3f stdev=%.3f sum=%.3f\n",
+            alen,min,     max,     mean,     median,     p95,     p99,     stddev,    sum)
+}
+EOE
+awk -v "label=$1" "$awk_program"
+EOD
+
 # include .localbashrc
 [ -f ~/.localbashrc ] && source ~/.localbashrc
