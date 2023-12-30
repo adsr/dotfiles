@@ -10,6 +10,9 @@ in `xterm` or from a console.
     cp -vf ~/dotfiles/xf4term-terminalrc ~/.config/xfce4/terminal/terminalrc
     cp -vf ~/dotfiles/xf4term-accels.scm ~/.config/xfce4/terminal/accels.scm
 
+TODO: Since around v1.1.0, config is now stored in xfconf. Include
+`~/.config/xfce4/xfconf` here.
+
 ### xfce4-panel
 
 Install `xfce4-panel-profiles`. Right click on panel, `Panel Preferences...`,
