@@ -189,6 +189,7 @@ path = .localgitconfig
 user = adsr
 [alias]
 br = branch
+brt = branch --sort=-committerdate
 ci = commit
 unci = reset --soft HEAD~1
 co = checkout
