@@ -239,7 +239,6 @@ EOD
 # write ~/.mlerc
 write_if_missing ~/.mlerc 755 <<'EOD'
 #!/bin/bash
-echo '-w1'                                      # soft word wrap
 echo '-c80'                                     # mark col 80
 echo '-b1'                                      # highlight bracket pairs
 echo '-i1'                                      # auto indent
