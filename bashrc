@@ -208,6 +208,11 @@ un = reset
 praise = blame
 sm = submodule
 chp = cherry-pick
+[status]
+submoduleSummary = true
+[diff]
+algorithm = histogram
+submodule = log
 [color]
 ui = auto
 [core]
@@ -216,7 +221,7 @@ safecrlf = true
 excludesfile = ~/.gitignore
 preloadindex = true
 [push]
-default = tracking
+default = current
 [credential]
 helper = cache --timeout=15552000
 EOD
