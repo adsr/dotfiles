@@ -62,7 +62,6 @@ shopt -s checkwinsize
 alias ls='ls --color=auto'
 alias ll='ls --color=auto -lF'
 alias la='ls --color=auto -alF'
-alias pl="ps -eH -o user,pid,ppid,pgid,%cpu,%mem,vsz:8,rss:8,tty,stat,wchan:16,etime,args | less -S"
 alias grep='grep --color=auto'
 alias gg='git grep -iP'
 alias bell='echo -e "\a"'
@@ -81,6 +80,12 @@ fdd() { find "${1:-.}" -type d; }
 fdf() { find "${1:-.}" -type f; }
 ffplay_ts()  { ffplay -vf "drawtext=fontsize=40:text='%{pts\:hms}':box=1:x=0:y=h-lh" "$@"; }
 ffplay_x11() { ffplay -select_region 1 -show_region 1 -f x11grab -i ${DISPLAY:-:0}; }
+pla() { pl a; }
+pl() {
+    ps -eH -o user,pid,ppid,pgid,%cpu,%mem,vsz:8,rss:8,tty,stat,wchan:16,etime,args | \
+        { test -n "$1" && cat || awk '$3!="2"{print}'; } | \
+        less -S
+}
 screenall() {
     screen -X at \# stuff "$(echo -e "$*\r")"
 }
