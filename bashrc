@@ -49,7 +49,7 @@ export LYNX_CFG=~/.lynx.cfg
 
 # env editor
 for e in mle vim nano; do
-    command -v $e &>/dev/null || continue;
+    command -v $e &>/dev/null || continue
     export EDITOR="$e"
     break
 done
@@ -84,7 +84,7 @@ ffplay_x11() { ffplay -select_region 1 -show_region 1 -f x11grab -i ${DISPLAY:-:
 pla() { pl a; }
 pl() {
     ps -eH -o user,pid,ppid,pgid,%cpu,%mem,vsz:8,rss:8,tty,stat,wchan:16,etime,args | \
-        { test -n "$1" && cat || awk '$3!="2"{print}'; } | \
+        { { test -n "$1" && cat; } || awk '$3!="2"{print}'; } | \
         less -S
 }
 screenall() {
@@ -135,7 +135,7 @@ bashrc_update() {
     local url='https://raw.githubusercontent.com/adsr/dotfiles/master/bashrc'
     local yn=''
     local tmpf=$(mktemp)
-    wget -O "$tmpf" "$url" || { echo 'Failed'; return; }
+    wget -O "$tmpf" "$url" || { echo 'Failed'; return 1; }
     diff -q "${BASH_SOURCE[0]}" "$tmpf" &>/dev/null
     [ "$?" -eq 0 ] && { echo 'No update'; return; }
     ( set -x; diff "${BASH_SOURCE[0]}" "$tmpf"; )
