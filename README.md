@@ -1,22 +1,15 @@
 # dotfiles
 
-dotfiles, config, setup notes for Debian bookworm on Lenovo X1 Carbon Gen 6
+dotfiles, config, setup notes for my computers running Debian.
 
-### xfce4-terminal
+### xfconf
 
-To install terminal config, kill all instances of `xfce4-terminal` and run these
-in `xterm` or from a console.
+(Untested.) Logout and run from console:
 
-    cp -vf ~/dotfiles/xf4term-terminalrc ~/.config/xfce4/terminal/terminalrc
-    cp -vf ~/dotfiles/xf4term-accels.scm ~/.config/xfce4/terminal/accels.scm
+    cd ~/.config
+    tar xf ~/dotfiles/xfce4-config.tar
 
-TODO: Since around v1.1.0, config is now stored in xfconf. Include
-`~/.config/xfce4/xfconf` here.
-
-### xfce4-panel
-
-Install `xfce4-panel-profiles`. Right click on panel, `Panel Preferences...`,
-`Backup and restore`, `Import`, select `~/dotfiles/xf4panel-config.txt.tar.bz2`.
+Includes conf for xfce4-panel, xfce4-terminal, etc.
 
 ### Workspace switcher icon width
 
@@ -24,7 +17,7 @@ Make the workspace switcher icons narrower like they used to be.
 
     cp -vf ~/dotfiles/gtk.css ~/.config/gtk-3.0/gtk.css
 
-### Synaptics Touchpad
+### Synaptics Touchpad (for Lenovo laptops)
 
 In `Application Autostart`, add `synclient` command to disable touchpad bs.
 
@@ -39,23 +32,8 @@ In `Application Autostart`, add `synclient` command to disable touchpad bs.
 
 Install `xfce4-screensaver`. Create and enable a systemd user service:
 
-```
-# /home/adam/.config/systemd/user/xfce4-screensaver.service
-[Unit]
-Description=Xfce Desktop Screensaver and Locker
-After=graphical.target
-StartLimitIntervalSec=30s
-StartLimitBurst=5
-
-[Service]
-Environment=SYSTEMD_LOG_LEVEL=debug
-ExecStart=/usr/bin/xfce4-screensaver --debug
-Restart=always
-RestartSec=1s
-
-[Install]
-WantedBy=graphical.target
-```
+    mkdir -p ~/.config/systemd/user
+    cp -vf ~/dotfiles/xfce4-screensaver.service ~/.config/systemd/user/xfce4-screensaver.service
 
 Potentially set `Sleep state` to `Linux` in BIOS otherwise laptop does not
 wakeup from suspend on lid open.
@@ -64,8 +42,6 @@ wakeup from suspend on lid open.
 
 See [pocketjet3plus-linux-setup][1].
 
-[1]: https://github.com/adsr/pocketjet3plus-linux-setup
-
 ### Windows 9x Theme
 
     mkdir ~/.themes
@@ -73,3 +49,5 @@ See [pocketjet3plus-linux-setup][1].
     tar xf ~/dotfiles/Redmond.tgz
 
 Change theme in Window Manager settings.
+
+[1]: https://github.com/adsr/pocketjet3plus-linux-setup

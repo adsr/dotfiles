@@ -1,0 +1,14 @@
+[Unit]
+Description=Xfce Desktop Screensaver and Locker
+After=graphical.target
+StartLimitIntervalSec=30s
+StartLimitBurst=5
+
+[Service]
+Environment=SYSTEMD_LOG_LEVEL=debug
+ExecStart=/usr/bin/xfce4-screensaver --debug
+Restart=always
+RestartSec=1s
+
+[Install]
+WantedBy=graphical.target
