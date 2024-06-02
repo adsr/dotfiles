@@ -79,6 +79,7 @@ fcd() { local d=$(fd "$@" | head -n1); [ -n "$d" ] && cd "$d"; }
 fdd() { find "${@:-.}" -type d; }
 fdf() { find "${@:-.}" -type f; }
 up()  { local n=${1:-1} p='' i; for i in $(seq 1 $n); do p+='../'; done; cd "$p"; }
+awkf() { awk -vf=${1:-1} '{print $f}'; }
 ffplay_ts()  { ffplay -vf "drawtext=fontsize=40:text='%{pts\:hms}':box=1:x=0:y=h-lh" "$@"; }
 ffplay_x11() { ffplay -select_region 1 -show_region 1 -f x11grab -i ${DISPLAY:-:0}; }
 pla() { pl a; }
