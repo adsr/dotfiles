@@ -78,10 +78,10 @@ fo()  { ff "$@" | head -n1; }
 fcd() { local d=$(fd "$@" | head -n1); [ -n "$d" ] && cd "$d"; }
 fdd() { find "${@:-.}" -type d; }
 fdf() { find "${@:-.}" -type f; }
-up()  { local n=${1:-1} p='' i; for i in $(seq 1 $n); do p+='../'; done; cd "$p"; }
-awkf() { awk -vf=${1:-1} '{print $f}'; }
+up()  { local n=${1:-1} p='' i; for i in $(seq 1 "$n"); do p+='../'; done; cd "$p"; }
+awkf() { awk -vf="${1:-1}" '{print $f}'; }
 ffplay_ts()  { ffplay -vf "drawtext=fontsize=40:text='%{pts\:hms}':box=1:x=0:y=h-lh" "$@"; }
-ffplay_x11() { ffplay -select_region 1 -show_region 1 -f x11grab -i ${DISPLAY:-:0}; }
+ffplay_x11() { ffplay -select_region 1 -show_region 1 -f x11grab -i "${DISPLAY:-:0}"; }
 pla() { pl a; }
 pl() {
     ps -eH -o user,pid,ppid,pgid,%cpu,%mem,vsz:8,rss:8,tty,stat,wchan:16,etime,args | \
@@ -99,6 +99,7 @@ dumpflow() {
         case $opt in
             a) hex=0 ;;
             i) iface=$OPTARG ;;
+            *) return 1 ;;
         esac
     done
     shift $((OPTIND-1))
@@ -168,9 +169,9 @@ bashrc_update() {
     wget -O "$tmpf" "$url" || { echo 'Failed'; return 1; }
     if interactive_update "${BASH_SOURCE[0]}" "$tmpf"; then
         echo; read -rp 'Reload? [yiN] >' yn
-        [ "$yn" = i ]              && export WRITEIF_INTERACTIVE=1
-        [ "$yn" = y -o "$yn" = i ] && source "${BASH_SOURCE[0]}"
-        [ "$yn" = i ]              && export -n WRITEIF_INTERACTIVE
+        [ "$yn" = i ]         && export WRITEIF_INTERACTIVE=1
+        [[ "$yn" =~ ^[yi]$ ]] && source "${BASH_SOURCE[0]}"
+        [ "$yn" = i ]         && export -n WRITEIF_INTERACTIVE
     fi
     rm -f "$tmpf"
 }
