@@ -109,21 +109,28 @@ dumpflow() {
         ( set -x; sudo tcpdump -li "$iface" "$filter" -w- | tcpflow -r- -gBCd5 | tr -c '[:print:]'$'\n'$'\x1b' '.' )
     fi
 }
-write_if_missing() {
+write_if() {
     local fname=$1
     local mode=$2
     local dname=$(dirname "$fname")
-    [ -f "$fname" ] && return
-    [ -L "$fname" ] && rm -f "$fname"
-    [ -d "$dname" ] || return
-    cat >"$fname"
-    [ -n "$mode" ] && chmod "$mode" "$fname"
+    local yn
+    if test -n "$WRITEIF_INTERACTIVE"; then
+        local tmpf=$(mktemp)
+        cat >"$tmpf"
+        interactive_update "$fname" "$tmpf"
+        rm -f "$tmpf"
+    else # write_if_missing
+        [ -d "$dname" ] || return
+        [ -f "$fname" ] && return
+        cat >"$fname"
+        [ -n "$mode" ] && chmod "$mode" "$fname"
+    fi
 }
 mle_install() {(
     set -e
     local tmpdir=$(mktemp -d)
     pushd "$tmpdir"
-    git clone --recursive https://github.com/adsr/mle.git
+    git clone --recursive 'https://github.com/adsr/mle.git'
     pushd mle
     make mle_vendor=1
     mkdir -vp "$HOME/bin"
@@ -132,19 +139,40 @@ mle_install() {(
     popd
     rm -rf "$tmpdir"
 )}
+interactive_update() {
+    local target=$1
+    local candidate=$2
+    local target_dir=$(dirname "$target")
+    local yn
+    if [ ! -f "$candidate" ]; then
+        return 1
+    elif [ ! -d "$target_dir" ]; then
+        echo; read -rp "Missing dir for ${target}. Create? [yN] >" yn
+        [ "$yn" = y ] && mkdir -vp "$target_dir" || return 1
+        yn=y
+    elif [ -f "$target" ]; then
+        diff -q "$target" "$candidate" &>/dev/null
+        [ "$?" -eq 0 ] && { echo "No diff for ${target}"; return 1; }
+        ( set -x; diff -u --color "$target" "$candidate" )
+        echo; read -rp 'Update? [yN] >' yn
+    else
+        yn=y
+    fi
+    [ "$yn" = y ] && cp -vf "$candidate" "$target" && return 0
+    return 1
+}
 bashrc_update() {
     local url='https://raw.githubusercontent.com/adsr/dotfiles/master/bashrc'
-    local yn=''
+    local yn
     local tmpf=$(mktemp)
     wget -O "$tmpf" "$url" || { echo 'Failed'; return 1; }
-    diff -q "${BASH_SOURCE[0]}" "$tmpf" &>/dev/null
-    [ "$?" -eq 0 ] && { echo 'No update'; return; }
-    ( set -x; diff "${BASH_SOURCE[0]}" "$tmpf"; )
-    echo; read -rp 'Update? [yN] >' yn
-    [ "$yn" = "y" ] && { cp -vf "$tmpf" "${BASH_SOURCE[0]}"; }
+    if interactive_update "${BASH_SOURCE[0]}" "$tmpf"; then
+        echo; read -rp 'Reload? [yiN] >' yn
+        [ "$yn" = i ]              && export WRITEIF_INTERACTIVE=1
+        [ "$yn" = y -o "$yn" = i ] && source "${BASH_SOURCE[0]}"
+        [ "$yn" = i ]              && export -n WRITEIF_INTERACTIVE
+    fi
     rm -f "$tmpf"
-    echo; read -rp 'Reload? [yN] >' yn
-    [ "$yn" = "y" ] && { source "${BASH_SOURCE[0]}"; }
 }
 
 # friendlier less
@@ -163,7 +191,7 @@ if ! shopt -oq posix; then
 fi
 
 # write ~/.screenrc
-write_if_missing ~/.screenrc <<'EOD'
+write_if ~/.screenrc <<'EOD'
 crlf off
 startup_message off
 vbell off
@@ -180,13 +208,13 @@ term screen-256color
 EOD
 
 # write ~/.gdbinit
-write_if_missing ~/.gdbinit <<'EOD'
+write_if ~/.gdbinit <<'EOD'
 set history save on
 add-auto-load-safe-path /home/adam/php-src/.gdbinit
 EOD
 
 # write ~/.gitconfig
-write_if_missing ~/.gitconfig <<'EOD'
+write_if ~/.gitconfig <<'EOD'
 [user]
 name = Adam Saponara
 email = as@php.net
@@ -234,17 +262,17 @@ helper = cache --timeout=15552000
 EOD
 
 # write ~/.inputrc
-write_if_missing ~/.inputrc <<'EOD'
+write_if ~/.inputrc <<'EOD'
 set enable-bracketed-paste off
 EOD
 
 # write ~/.wgetrc
-write_if_missing ~/.wgetrc <<'EOD'
+write_if ~/.wgetrc <<'EOD'
 check-certificate=off
 EOD
 
 # write ~/.mlerc
-write_if_missing ~/.mlerc 755 <<'EOD'
+write_if ~/.mlerc 755 <<'EOD'
 #!/bin/bash
 echo '-c80'                                     # mark col 80
 echo '-b1'                                      # highlight bracket pairs
@@ -275,7 +303,7 @@ echo '-nmle_as'
 EOD
 
 # write ~/bin/tableize
-write_if_missing ~/bin/tableize 755 <<'EOD'
+write_if ~/bin/tableize 755 <<'EOD'
 #!/usr/bin/env php
 <?php
 $all = rtrim(file_get_contents('php://stdin'));
@@ -329,18 +357,18 @@ foreach ($table as $row) {
 EOD
 
 # write ~/bin/foldw
-write_if_missing ~/bin/foldw 755 <<'EOD'
+write_if ~/bin/foldw 755 <<'EOD'
 #!/bin/bash
 w=${1:-79}
 cat | fold -s -w $w | sed -E 's/\s+$//g'
 EOD
 
 # write ~/.php_history
-write_if_missing ~/.php_history <<'EOD'
+write_if ~/.php_history <<'EOD'
 EOD
 
 # write ~/.lynx.cfg
-write_if_missing ~/.lynx.cfg <<'EOD'
+write_if ~/.lynx.cfg <<'EOD'
 ACCEPT_ALL_COOKIES:TRUE
 ASSUME_CHARSET:utf-8
 CHARACTER_SET:utf-8
@@ -355,7 +383,7 @@ UNDERLINE_LINKS:TRUE
 EOD
 
 # write ~/.Xresources
-write_if_missing ~/.Xresources <<'EOD'
+write_if ~/.Xresources <<'EOD'
 xterm*termName:        xterm-256color
 xterm*background:      black
 xterm*foreground:      gray80
@@ -385,7 +413,7 @@ xterm*scrollbar.translations: #override \n\
 EOD
 
 # write ~/bin/ahist
-write_if_missing ~/bin/ahist 755 <<'EOD'
+write_if ~/bin/ahist 755 <<'EOD'
 #!/usr/bin/env php
 <?php
 $nrows = max(24, (int)shell_exec('tput lines'));
@@ -461,7 +489,7 @@ for ($tsb = $tbmin, $tsb_next = null; $tsb <= $tbmax; $tsb_advance()) {
 EOD
 
 # write ~/bin/descstat
-write_if_missing ~/bin/descstat 755 <<'EOD'
+write_if ~/bin/descstat 755 <<'EOD'
 #!/bin/bash
 read -r -d '' awk_program <<'EOE'
 BEGIN                  { alen=0 }
