@@ -115,7 +115,7 @@ write_if() {
     local mode=$2
     local dname=$(dirname "$fname")
     local yn
-    if test -n "$WRITEIF_INTERACTIVE"; then
+    if [ -n "$WRITEIF_INTERACTIVE" ]; then
         local tmpf=$(mktemp)
         cat >"$tmpf"
         interactive_update "$fname" "$tmpf"
@@ -148,14 +148,14 @@ interactive_update() {
     if [ ! -f "$candidate" ]; then
         return 1
     elif [ ! -d "$target_dir" ]; then
-        echo; read -rp "Missing dir for ${target}. Create? [yN] >" yn
+        echo; read -rp "Missing dir for ${target}. Create? [yN] >" yn </dev/tty
         [ "$yn" = y ] && mkdir -vp "$target_dir" || return 1
         yn=y
     elif [ -f "$target" ]; then
         diff -q "$target" "$candidate" &>/dev/null
         [ "$?" -eq 0 ] && { echo "No diff for ${target}"; return 1; }
         ( set -x; diff -u --color "$target" "$candidate" )
-        echo; read -rp 'Update? [yN] >' yn
+        echo; read -rp "Update ${target}? [yN] >" yn </dev/tty
     else
         yn=y
     fi
@@ -169,9 +169,10 @@ bashrc_update() {
     wget -O "$tmpf" "$url" || { echo 'Failed'; return 1; }
     if interactive_update "${BASH_SOURCE[0]}" "$tmpf"; then
         echo; read -rp 'Reload? [yiN] >' yn
-        [ "$yn" = i ]         && export WRITEIF_INTERACTIVE=1
+        [ "$yn" = i ] && WRITEIF_INTERACTIVE=1 || WRITEIF_INTERACTIVE=
+        export WRITEIF_INTERACTIVE
         [[ "$yn" =~ ^[yi]$ ]] && source "${BASH_SOURCE[0]}"
-        [ "$yn" = i ]         && export -n WRITEIF_INTERACTIVE
+        export -n WRITEIF_INTERACTIVE
     fi
     rm -f "$tmpf"
 }
