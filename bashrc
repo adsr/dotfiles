@@ -494,6 +494,7 @@ write_if ~/bin/descstat 755 <<'EOD'
 #!/bin/bash
 read -r -d '' awk_program <<'EOE'
 BEGIN                  { alen=0 }
+/^\s*$/                { next }
 /^[-+]?[0-9]*.?[0-9]*/ { a[alen++]=$0 }
 END                    {
     if (alen<1) exit
@@ -505,7 +506,7 @@ END                    {
     stddev=sqrt(var)
     min=a[1]
     max=a[alen]
-    median=a[alen/2]
+    median=a[int(alen*0.50)]
     p95=a[int(alen*0.95)]
     p99=a[int(alen*0.99)]
     if (label) printf("%s: ", label)
