@@ -202,7 +202,7 @@ defmonitor off
 defutf8 on
 nethack off
 autodetach on
-defscrollback 10000
+defscrollback 1048576
 hardstatus alwayslastline
 hardstatus string '%{= kw}[%H]  %-w[%{= dW}%n %t%{-}]%+w'
 termcapinfo xterm* ti@:te@
