@@ -227,6 +227,7 @@ user = adsr
 [alias]
 br = branch
 brt = branch --sort=-committerdate
+brr = branch --sort=refname
 chp = cherry-pick
 ci = commit
 co = checkout
