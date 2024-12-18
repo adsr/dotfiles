@@ -299,6 +299,9 @@ echo '-s(\d+|true|false),261,0'
 echo '-s".*?",,4,0'
 echo '-s{.*},,4,0'
 echo '-s#.*$,,0,0'
+echo '-Ssyn_diff,\.(diff|patch)$,4,0'           # syn_diff
+echo '-s^\+.*,,3,0'
+echo '-s^-.*,,2,0'
 echo '-Kmle_as,,1'                              # custom mode
 [ -d '.git' ] && echo '-kcmd_grep,M-q,git grep --color=never -P -i -I -n %s 2>/dev/null'
 command -v tableize &>/dev/null && echo '-kcmd_shell,M-x t,tableize 2>/dev/null'
