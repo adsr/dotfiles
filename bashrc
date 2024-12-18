@@ -515,8 +515,8 @@ END                    {
     p95=a[int(alen*0.95)]
     p99=a[int(alen*0.99)]
     if (label) printf("%s: ", label)
-    printf("n=%d min=%.3f max=%.3f mean=%.3f median=%.3f p95=%.3f p99=%.3f stdev=%.3f sum=%.3f\n",
-            alen,min,     max,     mean,     median,     p95,     p99,     stddev,    sum)
+    printf("n=%d min=%.3f max=%.3f mean=%.3f median=%.3f p95=%.3f p99=%.3f stddev=%.3f sum=%.3f\n",
+            alen,min,     max,     mean,     median,     p95,     p99,     stddev,     sum)
 }
 EOE
 awk -v "label=$1" "$awk_program"
