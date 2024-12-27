@@ -82,11 +82,12 @@ up()  { local n=${1:-1} p='' i; for i in $(seq 1 "$n"); do p+='../'; done; cd "$
 awkf() { awk -vf="${1:-1}" '{print $f}' "${2:--}"; }
 ffplay_ts()  { ffplay -vf "drawtext=fontsize=40:text='%{pts\:hms}':box=1:x=0:y=h-lh" "$@"; }
 ffplay_x11() { ffplay -select_region 1 -show_region 1 -f x11grab -i "${DISPLAY:-:0}"; }
-pla() { pl a; }
+pla() { _pl_all=1 pl "$@"; }
+pll() { _pl_noh=1 pl "$@"; }
 pl() {
-    ps -eH -o user,pid,ppid,pgid,%cpu,%mem,vsz:8,rss:8,tty,stat,wchan:16,etime,args | \
-        { { test -n "$1" && cat; } || awk '$3!="2"{print}'; } | \
-        less -S
+    local forest; test -n "${_pl_noh:-}" || forest='-H'
+    ps -A $forest -o user,pid,ppid,pgid,%cpu,%mem,vsz:8,rss:8,tty,stat,wchan:16,etime,args "$@" | \
+        { { test -n "${_pl_all:-}" && cat; } || awk '$3!=2{print}'; } | less -S
 }
 screenall() {
     screen -X at \# stuff "$(echo -e "$*\r")"
