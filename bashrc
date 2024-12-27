@@ -113,10 +113,10 @@ dumpflow() {
 }
 write_if() {
     local fname=$1
-    local mode=$2
+    local mode=${2:-}
     local dname=$(dirname "$fname")
     local yn
-    if [ -n "$WRITEIF_INTERACTIVE" ]; then
+    if [ -n "${WRITEIF_INTERACTIVE:-}" ]; then
         local tmpf=$(mktemp)
         cat >"$tmpf"
         interactive_update "$fname" "$tmpf"
