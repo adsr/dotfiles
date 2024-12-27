@@ -403,7 +403,7 @@ xterm*rightScrollBar:  true
 xterm*faceName:        DejaVu Sans Mono
 xterm*faceSize:        11
 xterm*saveLines:       1048576
-xterm*translations: #override \n\
+xterm*vt100.translations: #override \n\
     Ctrl Shift <Key>X: insert-selection(SELECT) \n\
     Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \n\
     Ctrl Shift <Key>V: insert-selection(CLIPBOARD)
@@ -412,11 +412,11 @@ xterm*scrollbar.background: black
 xterm*scrollbar.thumb:      black
 xterm*scrollbar.width:      18
 xterm*scrollbar.translations: #override \n\
-    <Btn5Down>:         StartScroll(Forward) \n\
-    <Btn1Down>:         StartScroll(Continuous) MoveThumb() NotifyThumb() \n\
-    <Btn4Down>:         StartScroll(Backward) \n\
-    <Btn1Motion>:       MoveThumb() NotifyThumb() \n\
-    <BtnUp>:            NotifyScroll(Proportional) EndScroll()
+    <Btn5Down>:   StartScroll(Forward) \n\
+    <Btn1Down>:   StartScroll(Continuous) MoveThumb() NotifyThumb() \n\
+    <Btn4Down>:   StartScroll(Backward) \n\
+    <Btn1Motion>: MoveThumb() NotifyThumb() \n\
+    <BtnUp>:      NotifyScroll(Proportional) EndScroll()
 EOD
 
 # write ~/bin/ahist
