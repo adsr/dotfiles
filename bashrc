@@ -170,10 +170,10 @@ bashrc_update() {
     wget -O "$tmpf" "$url" || { echo 'Failed'; return 1; }
     if interactive_update "${BASH_SOURCE[0]}" "$tmpf"; then
         echo; read -rp 'Reload? [yiN] >' yn
-        [ "$yn" = i ] && WRITEIF_INTERACTIVE=1 || WRITEIF_INTERACTIVE=
-        export WRITEIF_INTERACTIVE
-        [[ "$yn" =~ ^[yi]$ ]] && source "${BASH_SOURCE[0]}"
-        export -n WRITEIF_INTERACTIVE
+        if [[ "$yn" =~ ^[yi]$ ]]; then
+            WRITEIF_INTERACTIVE=$(test "$yn" = i && printf 1 : printf '') \
+                source "${BASH_SOURCE[0]}"
+        fi
     fi
     rm -f "$tmpf"
 }
