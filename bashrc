@@ -430,15 +430,18 @@ $buckets = array_reduce(
     ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'],
     function ($a, $v) { $a[$v] = strtotime("+1 {$v}", 0); return $a; }
 );
-$opt = getopt('hi:s:Ff:g:');
-isset($opt['h']) && die("Usage: {$_SERVER['PHP_SELF']} -i <interval_str> -s <interval_s> -F(fill) -f <tfmt_out> -g <tfmt_in>\n");
+$opt = getopt('hi:s:Ff:g:v');
+isset($opt['h']) && die("Usage: {$_SERVER['PHP_SELF']} -i <interval_str> -s <interval_s> -F(fill) -f <tfmt_out> -g <tfmt_in> -v(value_mode)\n");
+$value_mode = isset($opt['v']);
 $tformat_out = $opt['f'] ?? 'Y-m-d H:i:s';
 $tformat_in = $opt['g'] ?? null;
 $tmin = null;
 $tmax = null;
 $tseries = [];
 while (($line = fgets(STDIN)) !== false) {
-    if ($tformat_in) try {
+    if ($value_mode) {
+        $ts = (int)$line;
+    } else if ($tformat_in) try {
         $ats = date_parse_from_format($tformat_in, $line);
         $ts = mktime($ats['hour'], $ats['minute'], $ats['second'],
                      $ats['month'] ?: 1, $ats['day'] ?: 1, $ats['year']); // tz
@@ -454,6 +457,7 @@ while (($line = fgets(STDIN)) !== false) {
 if (empty($tseries)) exit(0); // empty time series
 $trange = $tmax - $tmin;
 $tplus = match (true) {
+    $value_mode => max(1, intdiv($trange, $nrows)),
     isset($opt['F']) => sprintf('+%d second', max(1, intdiv($trange, $nrows))),
     isset($opt['s']) => sprintf('+%d second', max(1, (int)$opt['s'])),
     isset($opt['i']) => sprintf('+%s', ltrim($opt['i'], '+')),
@@ -465,12 +469,15 @@ $tplus = match (true) {
         return array_key_last($buckets);
     })()),
 };
+$tplus_fn = $value_mode
+    ? (fn ($tsb) => $tsb + $tplus)
+    : (fn ($tsb) => strtotime($tplus, $tsb));
 sort($tseries, SORT_NUMERIC);
 $tsb = null;
 $tsb_next = $tseries[0];
-$tsb_advance = function() use (&$tsb, &$tsb_next, $tplus) {
-    $tsb = $tsb_next !== null ? $tsb_next : strtotime($tplus, $tsb);
-    $tsb_next = strtotime($tplus, $tsb);
+$tsb_advance = function() use (&$tsb, &$tsb_next, $tplus_fn) {
+    $tsb = $tsb_next !== null ? $tsb_next : $tplus_fn($tsb);
+    $tsb_next = $tplus_fn($tsb);
     if ($tsb === $tsb_next || !is_int($tsb_next)) exit(1); // invalid tplus
 };
 $tsb_advance();
@@ -484,13 +491,13 @@ $vmax = max($hist);
 $tbmin = min(array_keys($hist));
 $tbmax = max(array_keys($hist));
 $vlen = strlen($vmax);
-$tsflen = strlen(gmdate($tformat_out));
+$tsflen = strlen($value_mode ? $tbmax : gmdate($tformat_out));
 $vwidth = max($ncols - $vlen - 1 - $tsflen - 1, 1);
 $vbucket = max(1.0, $vmax / $vwidth);
 for ($tsb = $tbmin, $tsb_next = null; $tsb <= $tbmax; $tsb_advance()) {
     $v = $hist[$tsb] ?? 0;
     $nv = (int)round($v / $vbucket);
-    $tsf = gmdate($tformat_out, $tsb);
+    $tsf = $value_mode ? sprintf("%{$tsflen}s", $tsb) : gmdate($tformat_out, $tsb);
     printf("%s %s %d\n", $tsf, str_repeat('#', $nv), $v);
 }
 EOD
