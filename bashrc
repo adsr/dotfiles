@@ -395,6 +395,7 @@ xterm*termName:        xterm-256color
 xterm*background:      black
 xterm*foreground:      gray80
 xterm*metaSendsEscape: true
+xterm*modifyOtherKeys: 1
 xterm*cursorBlink:     true
 xterm*maximized:       true
 xterm*bellIsUrgent:    true
