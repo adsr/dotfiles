@@ -48,11 +48,12 @@ export LESS='-RXi -# 8'
 export LYNX_CFG=~/.lynx.cfg
 
 # env editor
-for e in mle vim nano; do
-    command -v $e &>/dev/null || continue
-    export EDITOR="$e"
+for _e in mle vim nano; do
+    command -v $_e &>/dev/null || continue
+    export EDITOR="$_e"
     break
 done
+unset _e
 
 # shell opts
 shopt -s histappend
