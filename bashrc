@@ -42,7 +42,7 @@ export HISTSIZE=1048576
 export HISTFILESIZE=1048576
 
 # env less
-export LESS=-RXi
+export LESS='-RXi -# 8'
 
 # env lynx
 export LYNX_CFG=~/.lynx.cfg
