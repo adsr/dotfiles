@@ -532,5 +532,23 @@ EOE
 awk -v "label=$1" "$awk_program"
 EOD
 
+# write ~/bin/qrcam2clip
+write_if ~/bin/qrcam2clip 755 <<'EOD'
+#!/bin/bash
+set -euo pipefail
+main() {
+    trap cleanup EXIT
+    tmpf="$(mktemp --suffix .png)"
+    while true; do
+        ffmpeg -y -f v4l2 -video_size 1280x720 -i /dev/video0 -update 1 -frames:v 1 "$tmpf" &>/dev/null
+        out=$(ZXingReader -format QRCode -bytes "$tmpf" || true)
+        test -n "$out" && xclip -sel c <<<"$out" && echo Copied && exit
+        sleep 1
+    done
+}
+cleanup() { test -n "$tmpf" && rm -f "$tmpf"; }
+main "$@"
+EOD
+
 # include .localbashrc
 [ -f ~/.localbashrc ] && source ~/.localbashrc
