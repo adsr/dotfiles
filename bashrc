@@ -279,6 +279,9 @@ EOD
 # write ~/.inputrc
 write_if ~/.inputrc <<'EOD'
 set enable-bracketed-paste off
+set colored-completion-prefix on
+set colored-stats on
+set visible-stats on
 EOD
 
 # write ~/.wgetrc
