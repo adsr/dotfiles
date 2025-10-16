@@ -551,12 +551,23 @@ set -euo pipefail
 main() {
     trap cleanup EXIT
     tmpf="$(mktemp --suffix .png)"
+    dev=$(get_device)
     while true; do
-        ffmpeg -y -f v4l2 -video_size 1280x720 -i /dev/video0 -update 1 -frames:v 1 "$tmpf" &>/dev/null
+        ffmpeg -y -f v4l2 -video_size 1280x720 -i "/dev/video${dev}" -update 1 -frames:v 1 "$tmpf" &>/dev/null
         out=$(ZXingReader -format QRCode -bytes "$tmpf" || true)
         test -n "$out" && xclip -sel c <<<"$out" && echo Copied && exit
         sleep 1
     done
+}
+get_device() {
+    for ((dev=0; dev<=10; dev++)); do
+        dev_path="/sys/class/video4linux/video${dev}/name"
+        test -f "$dev_path" || continue
+        dev_name=$(cat "$dev_path")
+        grep -qiw 'ir' <<<"$dev_name" && continue # Skip if IR cam
+        printf "$dev" && return # Found!
+    done
+    echo 'Could not find webcam device' >&2 && exit 1
 }
 cleanup() { test -n "$tmpf" && rm -f "$tmpf"; }
 main "$@"
