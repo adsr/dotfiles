@@ -220,6 +220,11 @@ EOD
 write_if ~/.gdbinit <<'EOD'
 set history save on
 add-auto-load-safe-path /home/adam/php-src/.gdbinit
+define hexdump
+  dump binary memory /tmp/gdb.hexdump $arg0 $arg0+$arg1
+  shell hexdump -C /tmp/gdb.hexdump
+  shell rm -f /tmp/gdb.hexdump
+end
 EOD
 
 # write ~/.gitconfig
