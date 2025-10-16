@@ -120,7 +120,7 @@ write_if() {
     if [ -n "${WRITEIF_INTERACTIVE:-}" ]; then
         local tmpf=$(mktemp)
         cat >"$tmpf"
-        interactive_update "$fname" "$tmpf"
+        interactive_update "$fname" "$mode" "$tmpf"
         rm -f "$tmpf"
     else # write_if_missing
         [ -d "$dname" ] || return
@@ -144,7 +144,8 @@ mle_install() {(
 )}
 interactive_update() {
     local target=$1
-    local candidate=$2
+    local mode=$2
+    local candidate=$3
     local target_dir=$(dirname "$target")
     local yn
     if [ ! -f "$candidate" ]; then
@@ -161,7 +162,11 @@ interactive_update() {
     else
         yn=y
     fi
-    [ "$yn" = y ] && cp -vf "$candidate" "$target" && return 0
+    if [ "$yn" = y ]; then
+        cp -vf "$candidate" "$target"
+        [ -n "$mode" ] && chmod "$mode" "$target"
+        return 0
+    fi
     return 1
 }
 bashrc_update() {
