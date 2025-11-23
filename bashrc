@@ -210,7 +210,7 @@ defutf8 on
 nethack off
 autodetach on
 defscrollback 1048576
-hardstatus alwayslastline
+hardstatus alwaysfirstline
 hardstatus string '%{= kw}[%H]  %-w[%{= dW}%n %t%{-}]%+w'
 termcapinfo xterm* ti@:te@
 term screen-256color
