@@ -174,7 +174,7 @@ bashrc_update() {
     local yn
     local tmpf=$(mktemp)
     wget -O "$tmpf" "$url" || { echo 'Failed'; return 1; }
-    if interactive_update "${BASH_SOURCE[0]}" "$tmpf"; then
+    if interactive_update "${BASH_SOURCE[0]}" 644 "$tmpf"; then
         echo; read -rp 'Reload? [yiN] >' yn
         if [[ "$yn" =~ ^[yi]$ ]]; then
             WRITEIF_INTERACTIVE=$(test "$yn" = i && printf 1 : printf '') \
