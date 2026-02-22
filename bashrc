@@ -417,7 +417,8 @@ xterm*rightScrollBar:  true
 xterm*faceName:        DejaVu Sans Mono
 xterm*faceSize:        11
 xterm*saveLines:       1048576
-xterm*vt100.translations: #override \n\
+xterm*decGraphicsID:   340
+xterm*VT100.translations: #override \n\
     Ctrl Shift <Key>X: insert-selection(SELECT) \n\
     Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \n\
     Ctrl Shift <Key>V: insert-selection(CLIPBOARD)
