@@ -207,6 +207,7 @@ vbell off
 bell_msg 'Bell in window %n^G'
 defmonitor off
 defutf8 on
+defflow off
 nethack off
 autodetach on
 defscrollback 1048576
@@ -214,6 +215,7 @@ hardstatus alwaysfirstline
 hardstatus string '%{= kw}[%H]  %-w[%{= dW}%n %t%{-}]%+w'
 termcapinfo xterm* ti@:te@
 term screen-256color
+truecolor on
 EOD
 
 # write ~/.gdbinit
