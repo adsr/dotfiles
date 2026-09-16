@@ -205,14 +205,15 @@ crlf off
 startup_message off
 vbell off
 bell_msg 'Bell in window %n^G'
+rendition so "=d"
+rendition bell "=l"
 defmonitor off
 defutf8 on
 defflow off
 nethack off
 autodetach on
 defscrollback 1048576
-hardstatus alwaysfirstline
-hardstatus string '%{= kw}[%H]  %-w[%{= dW}%n %t%{-}]%+w'
+caption top always '%{= kw}[%H]  %-Lw[%{= b}%n %t%{-}]%+Lw'
 termcapinfo xterm* ti@:te@
 term screen-256color
 truecolor on
