@@ -43,6 +43,10 @@ export HISTFILESIZE=1048576
 
 # env less
 export LESS='-RXi -# 8'
+if [ "${TERM#screen}" != "$TERM" ]; then
+    export LESS_TERMCAP_so=$'\e[7m'
+    export LESS_TERMCAP_se=$'\e[27m'
+fi
 
 # env lynx
 export LYNX_CFG=~/.lynx.cfg
